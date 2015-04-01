@@ -26,7 +26,7 @@
 <div class="breadcrumbs">
      <a href="{% url 'admin:index' %}">{% trans "Home" %}</a> &rsaquo;
      <a href="{% url 'admin:app_list' 'templatesadmin' %}">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
-    <a href="{% url 'templatesadmin-overview' %}">{% trans "File selection" %}</a> &rsaquo;
+    <a href="{% url 'admin:templatesadmin_ftemplate_changelist' %}">{% trans "File selection" %}</a> &rsaquo;
     {{ template_path }}
 </div>
 {% endblock %}

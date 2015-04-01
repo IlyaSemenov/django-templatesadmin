@@ -1,5 +1,6 @@
-import os
 import codecs
+import os
+import sys
 from datetime import datetime
 from stat import ST_MTIME, ST_CTIME
 from re import search
@@ -57,7 +58,8 @@ for path in TEMPLATESADMIN_EDITHOOKS:
     module, attr = path[:i], path[i+1:]
     try:
         mod = __import__(module, {}, {}, [attr])
-    except ImportError, e:
+    except ImportError:
+        e = sys.exc_info()[1]
         raise ImproperlyConfigured('Error importing edithook module %s: "%s"' % (module, e))
     try:
         func = getattr(mod, attr)
@@ -154,7 +156,8 @@ def modify(request,
                     pre_save_notice = hook.pre_save(request, form, template_path)
                     if pre_save_notice:
                         messages.warning(request, message=pre_save_notice)
-            except TemplatesAdminException, e:
+            except TemplatesAdminException:
+                e = sys.exc_info()[1]
                 messages.error(request, message=e.message)
                 return HttpResponseRedirect(request.build_absolute_uri())
 
@@ -179,7 +182,8 @@ def modify(request,
                 f = codecs.open(template_path, 'w', 'utf-8')
                 f.write(content)
                 f.close()
-            except IOError, e:
+            except IOError:
+                e = sys.exc_info()[1]
                 messages.error(request, 
                     message=_('Template "%(path)s" has not been saved! Reason: %(errormsg)s') % {
                         'path': path,
@@ -193,7 +197,8 @@ def modify(request,
                     post_save_notice = hook.post_save(request, form, template_path)
                     if post_save_notice:
                         messages.info(request, message=post_save_notice)
-            except TemplatesAdminException, e:
+            except TemplatesAdminException:
+                e = sys.exc_info()[1]
                 messages.error(request, message=e.message)
                 return HttpResponseRedirect(request.build_absolute_uri())
 

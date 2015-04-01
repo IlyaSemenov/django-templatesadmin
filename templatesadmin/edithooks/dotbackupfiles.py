@@ -1,3 +1,4 @@
+import sys
 from shutil import copy
 
 from django import forms
@@ -20,7 +21,8 @@ class DotBackupFilesHook(TemplatesAdminHook):
 
         try:
             copy(template_path, '%s.backup' % template_path)
-        except IOError, e:
+        except IOError:
+            e = sys.exc_info()[1]
             raise TemplatesAdminException(
                 _(u'Backup Template "%(path)s" has not been saved! Reason: %(errormsg)s') % {
                     'path': template_path,
